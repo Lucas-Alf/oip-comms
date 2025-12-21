@@ -358,7 +358,11 @@ bool OIPComms::init_opc_ua_tag(const String &tag_group_name, const String &tag_p
 
 	UA_Variant_init(&tag.value);
 
-	tag.node_id = UA_NODEID_STRING_ALLOC((UA_UInt16)tag_group.path.to_int(), tag_path.utf8().get_data());
+	if (tag_path.is_valid_int()) {
+		tag.node_id = UA_NODEID_NUMERIC((UA_UInt16)tag_group.path.to_int(), (UA_UInt32)tag_path.to_int);
+	} else {
+		tag.node_id = UA_NODEID_STRING_ALLOC((UA_UInt16)tag_group.path.to_int(), tag_path.utf8().get_data());
+	}
 	tag.initialized = true;
 
 	tag_group.init_count++;
